@@ -1,16 +1,21 @@
 
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Search, Menu, X } from 'lucide-react';
-import { useCart } from '../contexts/CartContext';
+import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import CartDrawer from './CartDrawer';
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { cartItems } = useCart();
+  const [isScrolled, setIsScrolled] = useState(false);
   
+  // Handle scroll event to change navbar appearance
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
     
     window.addEventListener('scroll', handleScroll);
@@ -18,79 +23,77 @@ const Navbar = () => {
   }, []);
   
   return (
-    <nav className={`navbar transition-all duration-300 ${isScrolled ? 'py-3' : 'py-5'}`}>
-      <div className="container flex items-center justify-between">
-        {/* Logo */}
-        <a href="#" className="text-xl md:text-2xl font-display font-bold tracking-tight">
-          Кроссы и точка
-        </a>
-        
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8">
-          <a href="#catalog" className="text-sm font-medium hover:text-primary/70 transition-colors">
-            Каталог
-          </a>
-          <a href="#about" className="text-sm font-medium hover:text-primary/70 transition-colors">
-            О нас
-          </a>
-          <a href="#contact" className="text-sm font-medium hover:text-primary/70 transition-colors">
-            Контакты
-          </a>
-        </div>
-        
-        {/* Actions */}
-        <div className="flex items-center space-x-4">
-          <button className="p-2 rounded-full hover:bg-primary/5 transition-colors">
-            <Search size={20} />
-          </button>
+    <nav className={`navbar ${isScrolled ? 'shadow-sm' : ''}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link to="/" className="flex-shrink-0 flex items-center">
+            <span className="text-xl font-bold">Кроссы и точка</span>
+          </Link>
           
-          <button className="p-2 rounded-full hover:bg-primary/5 transition-colors relative">
-            <ShoppingBag size={20} />
-            {cartItems.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                {cartItems.length}
-              </span>
-            )}
-          </button>
+          {/* Desktop menu */}
+          <div className="hidden md:block">
+            <div className="flex items-center space-x-4">
+              <a href="#catalog" className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                Каталог
+              </a>
+              <a href="#about" className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                О нас
+              </a>
+              <a href="#contact" className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                Контакты
+              </a>
+            </div>
+          </div>
           
-          {/* Mobile menu button */}
-          <button 
-            className="p-2 rounded-full hover:bg-primary/5 transition-colors md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          {/* Mobile menu button and cart */}
+          <div className="flex items-center space-x-2">
+            <CartDrawer />
+            
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-foreground hover:text-primary hover:bg-primary/5 focus:outline-none"
+                aria-expanded="false"
+              >
+                <span className="sr-only">Открыть меню</span>
+                {isMenuOpen ? (
+                  <X className="block h-6 w-6" aria-hidden="true" />
+                ) : (
+                  <Menu className="block h-6 w-6" aria-hidden="true" />
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg animate-slide-down">
-          <div className="container py-4 flex flex-col space-y-4">
-            <a 
-              href="#catalog" 
-              className="text-sm font-medium p-2 hover:bg-primary/5 rounded transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Каталог
-            </a>
-            <a 
-              href="#about" 
-              className="text-sm font-medium p-2 hover:bg-primary/5 rounded transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              О нас
-            </a>
-            <a 
-              href="#contact" 
-              className="text-sm font-medium p-2 hover:bg-primary/5 rounded transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Контакты
-            </a>
-          </div>
+      {/* Mobile menu, show/hide based on menu state */}
+      <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
+        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+          <a
+            href="#catalog"
+            className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:text-primary hover:bg-primary/5"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Каталог
+          </a>
+          <a
+            href="#about"
+            className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:text-primary hover:bg-primary/5"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            О нас
+          </a>
+          <a
+            href="#contact"
+            className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:text-primary hover:bg-primary/5"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Контакты
+          </a>
         </div>
-      )}
+      </div>
     </nav>
   );
 };
