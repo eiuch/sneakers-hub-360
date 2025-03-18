@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
@@ -82,7 +81,7 @@ const paymentMethods = [
 ];
 
 const Checkout = () => {
-  const { cartItems, getTotalPrice, clearCart } = useCart();
+  const { cartItems, getTotalPrice } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   
@@ -108,17 +107,10 @@ const Checkout = () => {
   const handleSubmit = (values: FormValues) => {
     setIsSubmitting(true);
     
-    // Here you would typically send the order data to your backend
-    // For now, we'll simulate a successful order with a timeout
     setTimeout(() => {
-      toast({
-        title: "Заказ успешно оформлен!",
-        description: "Вы получите подтверждение на указанный email",
-      });
-      clearCart();
-      navigate("/");
+      navigate("/order-confirmation", { state: { formData: values } });
       setIsSubmitting(false);
-    }, 1500);
+    }, 500);
   };
   
   const subtotal = getTotalPrice();
