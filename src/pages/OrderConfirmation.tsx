@@ -67,6 +67,14 @@ const OrderConfirmation = () => {
   useEffect(() => {
     if (!location.state?.formData) {
       navigate('/checkout');
+    } else {
+      // Initialize shipping and payment methods from the form data if available
+      if (location.state.formData.shippingMethod) {
+        setSelectedShipping(location.state.formData.shippingMethod);
+      }
+      if (location.state.formData.paymentMethod) {
+        setSelectedPayment(location.state.formData.paymentMethod);
+      }
     }
   }, [location.state, navigate]);
   
